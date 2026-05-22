@@ -178,14 +178,13 @@ LinkedList<KeyType, ValueType>::LinkedList(const LinkedList &other) : head(nullp
     head->key = other.head->key;
     head->value = other.head->value;
     head->next = nullptr;
-    n = other.n;
 
     Node* curr = head;
     Node* curr2 = other.head->next;
 
     while(curr2) {
         curr->next = new Node;
-        curr = curr.next;
+        curr = curr->next;
         
         curr->key = curr2->key;
         curr->value = curr2->value;
@@ -196,10 +195,8 @@ LinkedList<KeyType, ValueType>::LinkedList(const LinkedList &other) : head(nullp
 }
 
 template <typename KeyType, typename ValueType>
-LinkedList<KeyType, ValueType>::LinkedList(LinkedList &&other) noexcept {
+LinkedList<KeyType, ValueType>::LinkedList(LinkedList &&other) noexcept  : head(other.head), n(other.n){
     // Move a linked list to a new owner
-    head = other.head;
-    n = other.n;
     other.head = nullptr;
     other.n = 0;
 }
@@ -235,9 +232,9 @@ LinkedList<KeyType, ValueType>::operator=(const LinkedList &other) {
     Node* curr2 = other.head->next;
 
     // Copying new List
-    while(curr) {
+    while(curr2) {
         curr->next = new Node;
-        curr = curr.next;
+        curr = curr->next;
         
         curr->key = curr2->key;
         curr->value = curr2->value;
@@ -245,6 +242,8 @@ LinkedList<KeyType, ValueType>::operator=(const LinkedList &other) {
 
         curr2 = curr2->next;
     }
+
+    return *this;
 }
 
 template <typename KeyType, typename ValueType>
@@ -272,6 +271,16 @@ LinkedList<KeyType, ValueType>::operator=(LinkedList &&other) noexcept {
 
 template <typename KeyType, typename ValueType>
 void LinkedList<KeyType, ValueType>::insert(const KeyType &key, const ValueType &value) {
+    // Insert element at the head of the list
+    Node* curr = head;
+    while (curr) {
+        if (curr->key == key) {
+            curr->value = value;
+            return;
+        }
+        curr = curr->next;
+    }
+
     Node* nxt = head;
     head = new Node;
     head->key = key;
@@ -283,6 +292,7 @@ void LinkedList<KeyType, ValueType>::insert(const KeyType &key, const ValueType 
 
 template <typename KeyType, typename ValueType>
 void LinkedList<KeyType, ValueType>::erase(const KeyType &key) {
+    // Erases the element with the given key
     if (!head) return;
     
     Node* nd = head;
@@ -295,7 +305,7 @@ void LinkedList<KeyType, ValueType>::erase(const KeyType &key) {
 
     Node* pr = nullptr;
 
-    while(nd->key != key && nd != nullptr) {
+    while(nd != nullptr && nd->key != key) {
         pr = nd;
         nd = nd->next;
     }
@@ -308,6 +318,7 @@ void LinkedList<KeyType, ValueType>::erase(const KeyType &key) {
 
 template <typename KeyType, typename ValueType>
 void LinkedList<KeyType, ValueType>::clear() {
+    // Clears the list
     Node* curr = head;
 
     while(curr) {
@@ -321,6 +332,82 @@ void LinkedList<KeyType, ValueType>::clear() {
 }
 
 template <typename KeyType, typename ValueType>
+const ValueType& LinkedList<KeyType, ValueType>::at(const KeyType &key) const {
+    // Returns a reference to the value with the given key
+    Node* nd = head;
+
+    while(nd) {
+        if (nd->key == key) return nd->value;
+        nd = nd->next;
+    }
+
+    throw std::out_of_range("Key not found");
+}
+
+template <typename KeyType, typename ValueType>
+ValueType& LinkedList<KeyType, ValueType>::at(const KeyType &key) {
+    // Returns a reference to the value with the given key
+    Node* nd = head;
+
+    while(nd) {
+        if (nd->key == key) return nd->value;
+        nd = nd->next;
+    }
+
+    throw std::out_of_range("Key not found");
+}
+
+template <typename KeyType, typename ValueType>
+ValueType* LinkedList<KeyType, ValueType>::find(const KeyType &key) {
+    // Returns a pointer to the element with the given key
+    Node* nd = head;
+
+    while(nd) {
+        if (nd->key == key) return &nd->value;
+        nd = nd->next;
+    }
+
+    return nullptr;
+}
+
+template <typename KeyType, typename ValueType>
+bool LinkedList<KeyType, ValueType>::operator==(const LinkedList<KeyType, ValueType> &other) const {
+    // Checks equality of two linked lists
+    if (n != other.n) return false;
+
+    Node* nd = head;
+    Node* src = other.head;
+
+    while(nd && src) {
+        if (nd->key != src->key || nd->value != src->value) return false;
+
+        nd = nd->next;
+        src = src->next;
+    }
+
+    return true;
+}
+
+template <typename KeyType, typename ValueType>
+bool LinkedList<KeyType, ValueType>::operator!=(const LinkedList<KeyType, ValueType> &other) const {
+    // Checks non-equality of two linked lists
+    return !(*this == other);
+}
+
+template <typename KeyType, typename ValueType>
+bool LinkedList<KeyType, ValueType>::contains(const KeyType &key) const {
+    Node* nd = head;
+
+    while(nd) {
+        if (nd->key == key) return true;
+        nd = nd->next;
+    }
+
+    return false;
+}
+
+
+template <typename KeyType, typename ValueType>
 size_t LinkedList<KeyType, ValueType>::size() const {
     // Size of the linked list
     return n;
@@ -329,13 +416,13 @@ size_t LinkedList<KeyType, ValueType>::size() const {
 // ---------- UnComment the macros as you go on, this allows for partial submissions ----------///
 #define TEST_CASE_1
 #define TEST_CASE_2
-// #define TEST_CASE_3
+#define TEST_CASE_3
 #define TEST_CASE_4
 #define TEST_CASE_5
 #define TEST_CASE_6
-// #define TEST_CASE_7
-// #define TEST_CASE_8
-// #define TEST_CASE_9
+#define TEST_CASE_7
+#define TEST_CASE_8
+#define TEST_CASE_9
 // #define TEST_CASE_10
 // #define TEST_CASE_11
 // #define TEST_CASE_12
