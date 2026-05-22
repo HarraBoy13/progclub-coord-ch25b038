@@ -281,12 +281,8 @@ void LinkedList<KeyType, ValueType>::insert(const KeyType &key, const ValueType 
         curr = curr->next;
     }
 
-    Node* nxt = head;
-    head = new Node;
-    head->key = key;
-    head->value = value;
-    head->next = nxt;
-
+    Node* nd = new Node{key, value, head};
+    head = nd;
     n++;
 }
 
@@ -341,7 +337,6 @@ const ValueType& LinkedList<KeyType, ValueType>::at(const KeyType &key) const {
         nd = nd->next;
     }
 
-    throw std::out_of_range("Key not found");
 }
 
 template <typename KeyType, typename ValueType>
