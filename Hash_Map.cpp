@@ -147,11 +147,137 @@ public:
 
 ///---------------------- DO NOT TOUCH/MODIFY ABOVE THIS LINE, IT'S FOR YOUR REFERENCE ----------------------///
 ///------------------ IF YOU DO SO THE CURSE OF KING MIDUS WILL TURN IT INTO BROKEN CODE :P------------------///
+template <typename KeyType, typename ValueType>
+LinkedList<KeyType, ValueType>::LinkedList() {
+    // Definition for an empty linked list
+    head = nullptr;
+    n = 0;
+}
 
+template <typename KeyType, typename ValueType>
+LinkedList<KeyType, ValueType>::~LinkedList() {
+    // Delete all nodes safely
+    Node* curr = head;
 
+    while(curr) {
+        Node* next = curr->next;
+        delete curr;
+        curr = next;
+    }
+}
+
+template <typename KeyType, typename ValueType>
+LinkedList<KeyType, ValueType>::LinkedList(const LinkedList &other) : head(nullptr), n(other.n) {
+    // Safely handle empty list
+    if (other.head == nullptr) {
+        return;
+    }
+    
+    // Deep copy of a linked list
+    head = new Node;
+    head->key = other.head->key;
+    head->value = other.head->value;
+    head->next = nullptr;
+    n = other.n;
+
+    Node* curr = head;
+    Node* curr2 = other.head->next;
+
+    while(curr2) {
+        curr->next = new Node;
+        curr = curr.next;
+        
+        curr->key = curr2->key;
+        curr->value = curr2->value;
+        curr->next = nullptr;
+
+        curr2 = curr2->next;
+    }
+}
+
+template <typename KeyType, typename ValueType>
+LinkedList<KeyType, ValueType>::LinkedList(LinkedList &&other) noexcept {
+    // Move a linked list to a new owner
+    head = other.head;
+    n = other.n;
+    other.head = nullptr;
+    other.n = 0;
+}
+
+template <typename KeyType, typename ValueType>
+LinkedList<KeyType, ValueType>&
+LinkedList<KeyType, ValueType>::operator=(const LinkedList &other) {
+    // Deep copy to an existing list
+    if (this == &other) {
+        return *this;
+    }
+
+    // Deleting current list
+    Node* curr = head;
+    while (curr) {
+        Node* next = curr->next;
+        delete curr;
+        curr = next;
+    }
+    head = nullptr;
+    n = other.n;
+
+    if (other.head == nullptr) {
+        return *this;
+    }
+
+    head = new Node;
+    head->key = other.head->key;
+    head->value = other.head->value;
+    head->next = nullptr;
+
+    curr = head;
+    Node* curr2 = other.head->next;
+
+    // Copying new List
+    while(curr) {
+        curr->next = new Node;
+        curr = curr.next;
+        
+        curr->key = curr2->key;
+        curr->value = curr2->value;
+        curr->next = nullptr;
+
+        curr2 = curr2->next;
+    }
+}
+
+template <typename KeyType, typename ValueType>
+LinkedList<KeyType, ValueType>&
+LinkedList<KeyType, ValueType>::operator=(LinkedList &&other) noexcept {
+    // Transfer ownership to existing object
+    if (this == &other) {
+        return *this;
+    }
+
+    Node* curr = head;
+    while (curr) {
+        Node* next = curr->next;
+        delete curr;
+        curr = next;
+    }
+
+    head = other.head;
+    n = other.n;
+    other.head = nullptr;
+    other.n = 0;
+
+    return *this;
+}
+
+template <typename KeyType, typename ValueType>
+size_t LinkedList<KeyType, ValueType>::size() const {
+    // Size of the linked list
+    return n;
+}
 
 // ---------- UnComment the macros as you go on, this allows for partial submissions ----------///
-// #define TEST_CASE_1
+#define TEST_CASE_1
 // #define TEST_CASE_2
 // #define TEST_CASE_3
 // #define TEST_CASE_4
