@@ -271,6 +271,56 @@ LinkedList<KeyType, ValueType>::operator=(LinkedList &&other) noexcept {
 }
 
 template <typename KeyType, typename ValueType>
+void LinkedList<KeyType, ValueType>::insert(const KeyType &key, const ValueType &value) {
+    Node* nxt = head;
+    head = new Node;
+    head->key = key;
+    head->value = value;
+    head->next = nxt;
+
+    n++;
+}
+
+template <typename KeyType, typename ValueType>
+void LinkedList<KeyType, ValueType>::erase(const KeyType &key) {
+    if (!head) return;
+    
+    Node* nd = head;
+    if (head->key == key) {
+        head = head->next;
+        delete nd;
+        n--;
+        return;
+    }
+
+    Node* pr = nullptr;
+
+    while(nd->key != key && nd != nullptr) {
+        pr = nd;
+        nd = nd->next;
+    }
+
+    if (nd != nullptr) {
+        pr->next = nd->next;
+        delete nd; n--;
+    }       
+}
+
+template <typename KeyType, typename ValueType>
+void LinkedList<KeyType, ValueType>::clear() {
+    Node* curr = head;
+
+    while(curr) {
+        Node* next = curr->next;
+        delete curr;
+        curr = next;
+    }
+
+    head = nullptr;
+    n = 0;
+}
+
+template <typename KeyType, typename ValueType>
 size_t LinkedList<KeyType, ValueType>::size() const {
     // Size of the linked list
     return n;
@@ -278,11 +328,11 @@ size_t LinkedList<KeyType, ValueType>::size() const {
 
 // ---------- UnComment the macros as you go on, this allows for partial submissions ----------///
 #define TEST_CASE_1
-// #define TEST_CASE_2
+#define TEST_CASE_2
 // #define TEST_CASE_3
-// #define TEST_CASE_4
-// #define TEST_CASE_5
-// #define TEST_CASE_6
+#define TEST_CASE_4
+#define TEST_CASE_5
+#define TEST_CASE_6
 // #define TEST_CASE_7
 // #define TEST_CASE_8
 // #define TEST_CASE_9
