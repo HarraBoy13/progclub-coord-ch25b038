@@ -3,6 +3,8 @@
 #include <string>
 #include <stdexcept>
 #include <utility>
+#include <limits>
+#include <cmath>
 
 class TestClass {
 private:
@@ -412,9 +414,25 @@ size_t LinkedList<KeyType, ValueType>::size() const {
 }
 
 // Hash Functor implementation 
-template<typename T>
-size_t HashFunctor<T>::operator()(T Key) const {
-    return 1;
+template <>
+size_t HashFunctor<std::string>::operator()(std::string Key) const {
+    size_t _MAXINT_ = std::numeric_limits<size_t>::max(); // Something I wanted to use for the hash function
+    // Using the standard char * (prime) ^ x
+    size_t key = 0, prime = 59, b = 14;
+    for(char& ch: Key) {
+        key = (key * prime + ch - 'a') % _MAXINT_;
+    }
+    return key + b;
+}
+
+template <>
+size_t HashFunctor<int>::operator()(int Key) const {
+    return Key / (1e9+7);
+}
+
+template <>
+size_t HashFunctor<float>::operator()(float Key) const {
+    return floor(Key / (1e9+7));
 }
 
 // Hash map implementation
