@@ -147,6 +147,8 @@ public:
 
 ///---------------------- DO NOT TOUCH/MODIFY ABOVE THIS LINE, IT'S FOR YOUR REFERENCE ----------------------///
 ///------------------ IF YOU DO SO THE CURSE OF KING MIDUS WILL TURN IT INTO BROKEN CODE :P------------------///
+// Linked List Implementation
+
 template <typename KeyType, typename ValueType>
 LinkedList<KeyType, ValueType>::LinkedList() {
     // Definition for an empty linked list
@@ -275,7 +277,6 @@ void LinkedList<KeyType, ValueType>::insert(const KeyType &key, const ValueType 
     Node* curr = head;
     while (curr) {
         if (curr->key == key) {
-            curr->value = value;
             return;
         }
         curr = curr->next;
@@ -337,6 +338,7 @@ const ValueType& LinkedList<KeyType, ValueType>::at(const KeyType &key) const {
         nd = nd->next;
     }
 
+    throw std::out_of_range("Key not found");
 }
 
 template <typename KeyType, typename ValueType>
