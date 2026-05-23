@@ -148,6 +148,7 @@ public:
 ///---------------------- DO NOT TOUCH/MODIFY ABOVE THIS LINE, IT'S FOR YOUR REFERENCE ----------------------///
 ///------------------ IF YOU DO SO THE CURSE OF KING MIDUS WILL TURN IT INTO BROKEN CODE :P------------------///
 // Linked List Implementation
+// Why would you not define the functions inside the class anna T_T
 
 template <typename KeyType, typename ValueType>
 LinkedList<KeyType, ValueType>::LinkedList() {
@@ -410,6 +411,116 @@ size_t LinkedList<KeyType, ValueType>::size() const {
     return n;
 }
 
+// Hash Functor implementation 
+template<typename T>
+size_t HashFunctor<T>::operator()(T Key) const {
+    return 1;
+}
+
+// Hash map implementation
+template <size_t N, typename KeyType, typename ValueType, typename HashFunc>
+HashMap<N, KeyType, ValueType, HashFunc>::HashMap() = default;
+
+template <size_t N, typename KeyType, typename ValueType, typename HashFunc>
+HashMap<N, KeyType, ValueType, HashFunc>::~HashMap() {}
+
+template <size_t N, typename KeyType, typename ValueType, typename HashFunc>
+HashMap<N, KeyType, ValueType, HashFunc>& HashMap<N, KeyType, ValueType, HashFunc>::operator=(const HashMap &other) {
+    hash = other.hash;
+    
+    if (this != &other) {
+        for(size_t i = 0; i < N; i++) {
+            buckets[i] = other.buckets[i];
+        }
+    }
+
+    return *this;
+}
+
+template <size_t N, typename KeyType, typename ValueType, typename HashFunc>
+HashMap<N, KeyType, ValueType, HashFunc>& HashMap<N, KeyType, ValueType, HashFunc>::operator=(HashMap &&other) noexcept {
+    hash = other.hash;
+    
+    if (this != &other) {
+        for (size_t i = 0; i < N; ++i) {
+            buckets[i].operator=(static_cast<Bucket&&>(other.buckets[i]));
+        }
+    }
+    return *this;
+}
+
+template <size_t N, typename KeyType, typename ValueType, typename HashFunc>
+void HashMap<N, KeyType, ValueType, HashFunc>::insert(const KeyType &key, const ValueType &value) {
+    size_t new_key = hash(key) % N;
+    buckets[new_key].insert(key, value);
+}
+
+template <size_t N, typename KeyType, typename ValueType, typename HashFunc>
+void HashMap<N, KeyType, ValueType, HashFunc>::erase(const KeyType &key) {
+    size_t new_key = hash(key) % N;
+    buckets[new_key].erase(key);
+}
+
+template <size_t N, typename KeyType, typename ValueType, typename HashFunc>
+void HashMap<N, KeyType, ValueType, HashFunc>::clear() {
+    for (size_t i = 0; i < N; ++i) {
+        buckets[i].clear();
+    }
+}
+
+template <size_t N, typename KeyType, typename ValueType, typename HashFunc>
+const ValueType& HashMap<N, KeyType, ValueType, HashFunc>::at(const KeyType &key) const {
+    size_t new_key = hash(key) % N;
+    return buckets[new_key].at(key);
+}
+
+template <size_t N, typename KeyType, typename ValueType, typename HashFunc>
+ValueType& HashMap<N, KeyType, ValueType, HashFunc>::at(const KeyType &key) {
+    size_t new_key = hash(key) % N;
+    return buckets[new_key].at(key);
+}
+
+template <size_t N, typename KeyType, typename ValueType, typename HashFunc>
+ValueType& HashMap<N, KeyType, ValueType, HashFunc>::operator[](const KeyType &key) {
+    size_t new_key = hash(key) % N;
+    if (!buckets[new_key].find(key)) {
+        buckets[new_key].insert(key, ValueType{});
+    }
+
+    return buckets[new_key].at(key);
+}
+
+template <size_t N, typename KeyType, typename ValueType, typename HashFunc>
+bool HashMap<N, KeyType, ValueType, HashFunc>::operator==(const HashMap &other) const {  
+    if (this->size() != other.size()) return false;
+
+    // Incomplete equality logic
+    return true;
+}
+
+template <size_t N, typename KeyType, typename ValueType, typename HashFunc>
+bool HashMap<N, KeyType, ValueType, HashFunc>::operator!=(const HashMap &other) const {
+    return !(*this == other);
+}
+
+template <size_t N, typename KeyType, typename ValueType, typename HashFunc>
+bool HashMap<N, KeyType, ValueType, HashFunc>::empty() const {
+    return this->size() == 0;
+}
+
+template <size_t N, typename KeyType, typename ValueType, typename HashFunc>
+bool HashMap<N, KeyType, ValueType, HashFunc>::contains(const KeyType &key) const {
+    size_t new_key = hash(key) % N;
+    return buckets[new_key].contains(key);
+}
+
+template <size_t N, typename KeyType, typename ValueType, typename HashFunc>
+size_t HashMap<N, KeyType, ValueType, HashFunc>::size() const {
+    size_t sz = 0;
+    for(size_t i = 0; i < N; i++) sz += buckets[i].size();
+    return sz;
+}
+
 // ---------- UnComment the macros as you go on, this allows for partial submissions ----------///
 #define TEST_CASE_1
 #define TEST_CASE_2
@@ -420,17 +531,17 @@ size_t LinkedList<KeyType, ValueType>::size() const {
 #define TEST_CASE_7
 #define TEST_CASE_8
 #define TEST_CASE_9
-// #define TEST_CASE_10
-// #define TEST_CASE_11
-// #define TEST_CASE_12
-// #define TEST_CASE_13
-// #define TEST_CASE_14
-// #define TEST_CASE_15
-// #define TEST_CASE_16
-// #define TEST_CASE_17
-// #define TEST_CASE_18
-// #define TEST_CASE_19
-// #define TEST_CASE_20
+#define TEST_CASE_10
+#define TEST_CASE_11
+#define TEST_CASE_12
+#define TEST_CASE_13
+#define TEST_CASE_14
+#define TEST_CASE_15
+#define TEST_CASE_16
+#define TEST_CASE_17
+#define TEST_CASE_18
+#define TEST_CASE_19
+#define TEST_CASE_20
 
 ///---------------------- DO NOT TOUCH/MODIFY BELOW THIS LINE, IT'S FOR HACKERRANK TESTING ----------------------///
 ///------------------ IF YOU DO SO THE CURSE OF KING MIDUS WILL TURN IT INTO BROKEN CODE :P------------------///
